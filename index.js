@@ -76,10 +76,12 @@ function upload(file, Bucket, dirName, existingObjectUrl, onSuccess, onError) {
 	if (!file) return onError('File must be passed!');
 	let now = moment().format('YYYY-MM-DD-HH-MM-SS');
 	let random = chance.hash({length: 4});
-	let keyName = existingObjectUrl.split('/').splice(4).join('/');
+	let keyName = existingObjectUrl 
+		? existingObjectUrl.split('/').splice(4).join('/')
+		: `profile/${random}-${now}/${file.name}`;
 	let params = {
 		Bucket,
-		"Key": existingObjectUrl ? keyName : `profile/${random}-${now}/${file.name}`,
+		"Key": keyName,
 		"ContentType": file.type,
 		"Body": file,
 		"ACL": "public-read"

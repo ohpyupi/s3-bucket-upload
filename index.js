@@ -40,15 +40,18 @@ module.exports = class S3Upload {
 		if (!filename) throw Error('You must pass filename.');
 		if (!base64) throw Error('You must pass base64.');
 		// If an additional callback has been passed, 
-		// it will replace onSuccess and onError callback function.
-		if (callback) {
-			onSuccess = callback;
-			onError = callback;
-		}
 		// [1] Create a file object from base64 data string.
 		let file = createFileObjectFromBase64(base64, filename);
 		// [2] Upload the file object to the S3 bucket.
-		upload(file, Bucket, dirName, existingObjectUrl, onSuccess, onError);
+		upload(file, Bucket, dirName, existingObjectUrl, function onSuccess(res) {
+			// it will replace onSuccess function if callback is provided.
+			if (callback) return callback(null, res);
+			onSuccess(res);
+		}, function onError(err) {
+			// it will replace onError function if callback is provided.
+			if (callback) return callback(err);
+			onError(err);
+		});
 	}
 }
 

@@ -1,5 +1,4 @@
 const Chance = require('chance');
-const moment = require('moment');
 
 let AWS;
 let s3;
@@ -77,7 +76,8 @@ function initiateEventListeners(input, button) {
 // [3] Upload the file to the S3 bucket.
 function upload(file, Bucket, dirName, existingObjectUrl, onSuccess, onError) {
 	if (!file) return onError('File must be passed!');
-	let now = moment().format('YYYY-MM-DD-HH-MM-SS');
+
+	let now = getNowISOString();
 	let random = chance.hash({length: 4});
 	let keyName = existingObjectUrl 
 		? existingObjectUrl.split('/').splice(4).join('/')
@@ -114,3 +114,21 @@ function createFileObjectFromBase64(base64, filename) {
 	let file = new File([data.buffer], `${filename}.${data.type.split('/')[1]}`, {type: data.type});
 	return file;
 }
+
+function getNowISOString() {
+	let _d = new Date();
+	let time = {
+		year: _d.getFullYear(),
+		month: _d.getMonth()+1,
+		date: _d.getDate(),
+		hour: _d.getHours(),
+		min: _d.getMinutes(),
+		sec: _d.getSeconds(),
+	};
+	return Object.keys(time).reduce((sum, value, idx)=>{
+		let prefix = (idx === 0)
+			? `` 
+			: `-`;
+		return sum += `${prefix}${time[value]}`;
+	}, ``);
+};

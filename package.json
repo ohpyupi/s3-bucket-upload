@@ -1,6 +1,6 @@
 {
   "name": "s3-bucket-upload",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chance": "^1.0.11",
-    "moment": "^2.18.1"
+    "chance": "^1.0.11"
   }
 }
